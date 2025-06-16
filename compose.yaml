@@ -1,0 +1,6 @@
+﻿services:
+  sinext_sharp_backend:
+    image: sinext_sharp_backend
+    build:
+      context: .
+      dockerfile: Sinext_sharp_backend/Dockerfile

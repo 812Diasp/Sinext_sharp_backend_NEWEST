@@ -1,0 +1,6 @@
+@Sinext_sharp_backend_HostAddress = http://localhost:5095
+
+GET {{Sinext_sharp_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
