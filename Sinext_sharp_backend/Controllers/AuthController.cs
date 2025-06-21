@@ -33,22 +33,42 @@ public class AuthController : ControllerBase
         if (dto.Password != dto.ConfirmPassword)
             return BadRequest("Пароли не совпадают");
 
+        // Генерируем ID пользователя и кошелька
+        var userId = Guid.NewGuid();
+        var walletId = Guid.NewGuid();
+
+        // Создаём кошелёк
+        var wallet = new Wallet
+        {
+            Id = walletId,
+            UserId = userId,  // <-- Привязываем к пользователю
+            Transactions = new List<Transaction>(),
+            Loans = new List<Loan>(),
+            GuaranteedIncomes = new List<GuaranteedIncome>(),
+            Stocks = new List<Stock>()
+        };
+
+        // Создаём пользователя
         var user = new User
         {
-            Id = Guid.NewGuid(),
+            Id = userId,
             Username = dto.Username,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             Email = dto.Email,
             EmailConfirmed = false,
-            Wallet = new Wallet { Id = Guid.NewGuid() }
+            WalletId = walletId, // <-- Указываем WalletId
+            Wallet = wallet      // <-- Можно оставить, можно и без этого, если будете загружать по навигации
         };
 
+        // Добавляем оба объекта
+        await _context.Wallets.AddAsync(wallet);
         await _context.Users.AddAsync(user);
+
         await _context.SaveChangesAsync();
 
+        // Отправка подтверждения email
         var confirmationLink = $"http://localhost:3000/api/auth/confirm-email?userId={user.Id}";
         var emailBody = $"<h3>Подтвердите ваш email</h3><p><a href='{confirmationLink}'>Нажмите здесь</a>, чтобы подтвердить регистрацию.</p>";
-
         await _emailService.SendEmailAsync(user.Email, "Подтверждение почты", emailBody);
 
         return Ok(new AuthResponseDto
@@ -57,7 +77,6 @@ public class AuthController : ControllerBase
             UserId = user.Id
         });
     }
-
     [HttpGet("confirm-email")]
     public async Task<IActionResult> ConfirmEmail(Guid userId)
     {

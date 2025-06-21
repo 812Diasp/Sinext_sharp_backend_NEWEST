@@ -7,5 +7,8 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public bool EmailConfirmed { get; set; } = false;
-    public Wallet Wallet { get; set; } = new();
+
+    // Навигационное свойство
+    public Guid WalletId { get; set; }
+    public Wallet Wallet { get; set; } = null!;
 }

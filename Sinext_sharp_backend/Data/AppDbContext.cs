@@ -13,6 +13,8 @@ public class AppDbContext : DbContext
     public DbSet<Wallet> Wallets { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<Loan> Loans { get; set; }
+    public DbSet<Stock> Stocks { get; set; }
+    public DbSet<GuaranteedIncome> GuaranteedIncomes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -24,6 +26,6 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasOne(u => u.Wallet)
             .WithOne()
-            .HasForeignKey<Wallet>(w => w.Id);
+            .HasForeignKey<User>(u => u.WalletId);
     }
 }

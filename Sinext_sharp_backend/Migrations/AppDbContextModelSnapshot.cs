@@ -22,6 +22,33 @@ namespace Sinext_sharp_backend.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Sinext_sharp_backend.Models.GuaranteedIncome", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("WalletId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("GuaranteedIncomes");
+                });
+
             modelBuilder.Entity("Sinext_sharp_backend.Models.Loan", b =>
                 {
                     b.Property<Guid>("Id")
@@ -52,6 +79,35 @@ namespace Sinext_sharp_backend.Migrations
                     b.HasIndex("WalletId");
 
                     b.ToTable("Loans");
+                });
+
+            modelBuilder.Entity("Sinext_sharp_backend.Models.Stock", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("CurrentPrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("PurchasePrice")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("WalletId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("Stocks");
                 });
 
             modelBuilder.Entity("Sinext_sharp_backend.Models.Transaction", b =>
@@ -105,7 +161,13 @@ namespace Sinext_sharp_backend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("WalletId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -113,6 +175,10 @@ namespace Sinext_sharp_backend.Migrations
             modelBuilder.Entity("Sinext_sharp_backend.Models.Wallet", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -120,10 +186,28 @@ namespace Sinext_sharp_backend.Migrations
                     b.ToTable("Wallets");
                 });
 
+            modelBuilder.Entity("Sinext_sharp_backend.Models.GuaranteedIncome", b =>
+                {
+                    b.HasOne("Sinext_sharp_backend.Models.Wallet", null)
+                        .WithMany("GuaranteedIncomes")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Sinext_sharp_backend.Models.Loan", b =>
                 {
                     b.HasOne("Sinext_sharp_backend.Models.Wallet", null)
                         .WithMany("Loans")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Sinext_sharp_backend.Models.Stock", b =>
+                {
+                    b.HasOne("Sinext_sharp_backend.Models.Wallet", null)
+                        .WithMany("Stocks")
                         .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -138,24 +222,24 @@ namespace Sinext_sharp_backend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Sinext_sharp_backend.Models.Wallet", b =>
-                {
-                    b.HasOne("Sinext_sharp_backend.Models.User", null)
-                        .WithOne("Wallet")
-                        .HasForeignKey("Sinext_sharp_backend.Models.Wallet", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Sinext_sharp_backend.Models.User", b =>
                 {
-                    b.Navigation("Wallet")
+                    b.HasOne("Sinext_sharp_backend.Models.Wallet", "Wallet")
+                        .WithOne()
+                        .HasForeignKey("Sinext_sharp_backend.Models.User", "WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Sinext_sharp_backend.Models.Wallet", b =>
                 {
+                    b.Navigation("GuaranteedIncomes");
+
                     b.Navigation("Loans");
+
+                    b.Navigation("Stocks");
 
                     b.Navigation("Transactions");
                 });
