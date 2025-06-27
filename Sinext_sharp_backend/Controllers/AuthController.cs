@@ -105,7 +105,8 @@ public class AuthController : ControllerBase
         return Ok(new AuthResponseDto
         {
             Token = _tokenService.GenerateToken(user),
-            UserId = user.Id
+            UserId = user.Id,
+            WalletId = user.WalletId
         });
     }
 }

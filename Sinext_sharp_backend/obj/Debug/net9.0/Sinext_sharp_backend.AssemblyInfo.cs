@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Sinext_sharp_backend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6dda5b62d4a3fb1ffcc1cd8bfd43a11b7cc24af6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+44ea6c5f7d16f80fd888c68009e7eb1dc68b3550")]
 [assembly: System.Reflection.AssemblyProductAttribute("Sinext_sharp_backend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Sinext_sharp_backend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
